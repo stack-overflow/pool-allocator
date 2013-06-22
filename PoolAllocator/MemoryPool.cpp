@@ -1,5 +1,7 @@
 #include "MemoryPool.h"
 
+//#define PRECISE_MEMORY_CHECK
+
 MemoryPool::MemoryPool(int _num_blocks, int _block_size) :
 	m_num_blocks(_num_blocks),
 	m_block_header_size(sizeof(DWORD)),
