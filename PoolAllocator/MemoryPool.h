@@ -8,7 +8,7 @@ typedef uint8_t       BYTE;
 class MemoryPool
 {
 public:
-	MemoryPool(int _num_blocks, int _block_size);
+	MemoryPool(size_t _num_blocks, size_t _block_size);
 	~MemoryPool();
 
 	void* allocate();
@@ -23,6 +23,8 @@ public:
 
 	bool is_from_here(void *ptr) const;
 
+	
+
 	// Make memory available for reuse. Does not actually free memory.
 	void clear();
 
@@ -34,6 +36,8 @@ private:
 	void *data_pointer(DWORD *pointer) const;
 
 	DWORD *next_block_address(DWORD *block) const;
+
+	bool is_valid_pointer(void *pointer);
 
 	void prepare_memory();
 

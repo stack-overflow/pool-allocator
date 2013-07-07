@@ -2,7 +2,7 @@
 
 //#define PRECISE_MEMORY_CHECK
 
-MemoryPool::MemoryPool(int _num_blocks, int _block_size) :
+MemoryPool::MemoryPool(size_t _num_blocks, size_t _block_size) :
 	m_num_blocks(_num_blocks),
 	m_block_header_size(sizeof(DWORD)),
 	m_block_size(_block_size + sizeof(DWORD)),
@@ -40,10 +40,7 @@ bool MemoryPool::deallocate(void *p)
 	{
 		DWORD *to_deallocate = (DWORD*) pointer_header(p);
 
-		int delta = (BYTE*) m_mem - (BYTE*) to_deallocate;
-		int delta_modulo = abs(delta) % m_block_size;
-
-		if (delta_modulo != 0 && delta_modulo != m_block_size)
+		if (!is_valid_pointer(to_deallocate))
 		{
 			return false;
 		}
@@ -119,6 +116,17 @@ void *MemoryPool::data_pointer(DWORD *pointer) const
 DWORD *MemoryPool::next_block_address(DWORD *block) const
 {
 	return (DWORD*) (*block);
+}
+
+bool MemoryPool::is_valid_pointer(void *pointer)
+{
+		int delta = (BYTE*) m_mem - (BYTE*) pointer;
+		int delta_modulo = abs(delta) % m_block_size;
+
+		if (delta_modulo != 0 && delta_modulo != m_block_size)
+		{
+			return false;
+		}
 }
 
 void MemoryPool::prepare_memory()
