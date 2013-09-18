@@ -24,11 +24,12 @@ void *AllocationEngine::allocate()
 		m_pools.pop_front();
 		m_pools.push_back(front);
 
+		// If second pool in line is full, then all of the remaining are.
 		if (m_pools.front()->full())
 		{
 			m_pools.push_front(new MemoryPool(m_num_blocks, m_block_size));
 		}
-			
+
 		return m_pools.front()->allocate();
 	}
 }
@@ -44,7 +45,7 @@ void AllocationEngine::deallocate(void *p)
 	{
 		if (m_pools.size() > 1)
 		{
-			if ((*it)->empty())
+            if ((*it)->empty())
 			{
 				delete (*it);
 				m_pools.erase(it);
@@ -78,11 +79,14 @@ void AllocationEngine::clear()
 {
 	// Perform default delete on all memory pools, which will trigger destructors
 	// and actual system memory release.
-	for_each(m_pools.begin(), m_pools.end(), std::default_delete<MemoryPool>());
+	for_each(
+		m_pools.begin(),
+		m_pools.end(),
+		std::default_delete<MemoryPool>());
 	m_pools.clear();
 }
 
-size_t AllocationEngine::get_pool_size()
+size_t AllocationEngine::get_pool_size() const
 {
 	return m_block_size;
 }

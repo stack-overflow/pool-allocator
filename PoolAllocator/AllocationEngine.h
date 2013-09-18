@@ -17,7 +17,7 @@ public:
 
 	void clear();
 
-	size_t get_pool_size();
+	size_t get_pool_size() const;
 
 private:
 	std::list<MemoryPool*> m_pools;

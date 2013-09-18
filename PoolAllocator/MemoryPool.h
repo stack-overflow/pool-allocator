@@ -23,21 +23,19 @@ public:
 
 	bool is_from_here(void *ptr) const;
 
-	
-
 	// Make memory available for reuse. Does not actually free memory.
 	void clear();
 
 private:
-	BYTE *next_block(DWORD *block) const;
+	BYTE *get_next_block(DWORD *block) const;
 
 	BYTE *pointer_header(void *pointer) const;
 
 	void *data_pointer(DWORD *pointer) const;
 
-	DWORD *next_block_address(DWORD *block) const;
+	DWORD *next_free_block_address(DWORD *block) const;
 
-	bool is_valid_pointer(void *pointer);
+	bool is_valid_pointer(void *pointer) const;
 
 	void prepare_memory();
 

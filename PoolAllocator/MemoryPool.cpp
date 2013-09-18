@@ -1,5 +1,5 @@
 #include "MemoryPool.h"
-
+#include <iostream>
 //#define PRECISE_MEMORY_CHECK
 
 MemoryPool::MemoryPool(size_t _num_blocks, size_t _block_size) :
@@ -23,15 +23,16 @@ void* MemoryPool::allocate()
 {
 	if (m_num_allocated_blocks < m_num_blocks)
 	{
+		// Get pointer to data, from current free block
 		void* to_return = data_pointer(m_head);
-		m_head = next_block_address(m_head);
+		// Set head of the list to the next address
+		m_head = next_free_block_address(m_head);
 		++m_num_allocated_blocks;
 		return to_return;
 	}
-	else
-	{
-		return NULL;
-	}
+
+	// No free blocks available
+	return NULL;
 }
 
 bool MemoryPool::deallocate(void *p)
@@ -44,17 +45,14 @@ bool MemoryPool::deallocate(void *p)
 		{
 			return false;
 		}
-
 		(*to_deallocate) = (DWORD)m_head;
 		m_head = to_deallocate;
 		--m_num_allocated_blocks;
 
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+
+	return false;
 }
 
 bool MemoryPool::full() const
@@ -85,7 +83,7 @@ bool MemoryPool::is_from_here(void *ptr) const
 			return true;
 		}
 
-		tmp = (DWORD*)next_block(tmp);
+		tmp = (DWORD*)get_next_block(tmp);
 	}
 	return false;
 #endif // PRECISE_MEMORY_CHECK
@@ -98,7 +96,7 @@ void MemoryPool::clear()
 }
 
 // private ====
-BYTE *MemoryPool::next_block(DWORD *block) const
+BYTE *MemoryPool::get_next_block(DWORD *block) const
 {
 	return (BYTE*) block + m_block_size;
 }
@@ -113,20 +111,18 @@ void *MemoryPool::data_pointer(DWORD *pointer) const
 	return (void*) ((BYTE*) pointer + m_block_header_size);
 }
 
-DWORD *MemoryPool::next_block_address(DWORD *block) const
+DWORD *MemoryPool::next_free_block_address(DWORD *block) const
 {
 	return (DWORD*) (*block);
 }
 
-bool MemoryPool::is_valid_pointer(void *pointer)
+bool MemoryPool::is_valid_pointer(void *pointer) const
 {
-		int delta = (BYTE*) m_mem - (BYTE*) pointer;
-		int delta_modulo = abs(delta) % m_block_size;
+	// Get 
+	int delta = (BYTE*) pointer - (BYTE*) m_mem;
+	int delta_modulo = abs(delta) % m_block_size;
 
-		if (delta_modulo != 0 && delta_modulo != m_block_size)
-		{
-			return false;
-		}
+	return (delta_modulo == 0 || delta_modulo == m_block_size);
 }
 
 void MemoryPool::prepare_memory()
@@ -134,8 +130,10 @@ void MemoryPool::prepare_memory()
 	DWORD *tmp_head = m_mem;
 	for (int i = 0; i < m_num_blocks; ++i)
 	{
-		(*tmp_head) = (DWORD) next_block(tmp_head);
-		tmp_head = next_block_address(tmp_head);
+		// Get next block in linear memory and set the header to it
+		(*tmp_head) = (DWORD) get_next_block(tmp_head);
+		// Enter the next block
+		tmp_head = next_free_block_address(tmp_head);
 	}
 	m_head = m_mem;
 }
