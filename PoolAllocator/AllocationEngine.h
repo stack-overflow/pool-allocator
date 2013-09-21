@@ -7,20 +7,20 @@ class AllocationEngine
 {
 public:
 
-	AllocationEngine(int _num_blocks, int _block_size);
+    AllocationEngine(int _num_blocks, int _block_size);
 
-	~AllocationEngine();
+    ~AllocationEngine();
 
-	void *allocate();
+    void *allocate();
 
-	void deallocate(void *p);
+    void deallocate(void *p);
 
-	void clear();
+    void clear();
 
-	size_t get_pool_size() const;
+    size_t get_pool_size() const;
 
 private:
-	std::list<MemoryPool*> m_pools;
-	int m_num_blocks;
-	int m_block_size;
+    std::list<MemoryPool*> m_pools;
+    int m_num_blocks;
+    int m_block_size;
 };

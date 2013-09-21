@@ -24,8 +24,11 @@
     <ClCompile Include="AllocationEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VectorPoolAllocator.cpp">
+    <ClCompile Include="FlexPoolAllocator.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalPoolAllocator.h">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -35,10 +38,10 @@
     <ClInclude Include="AllocationEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VectorPoolAllocator.h">
+    <ClInclude Include="StlPoolAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StlPoolAllocator.h">
+    <ClInclude Include="FlexPoolAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

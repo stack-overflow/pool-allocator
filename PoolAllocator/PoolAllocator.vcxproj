@@ -83,15 +83,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AllocationEngine.cpp" />
+    <ClCompile Include="GlobalPoolAllocator.h" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MemoryPool.cpp" />
-    <ClCompile Include="VectorPoolAllocator.cpp" />
+    <ClCompile Include="FlexPoolAllocator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AllocationEngine.h" />
     <ClInclude Include="MemoryPool.h" />
     <ClInclude Include="StlPoolAllocator.h" />
-    <ClInclude Include="VectorPoolAllocator.h" />
+    <ClInclude Include="FlexPoolAllocator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
