@@ -27,8 +27,8 @@ private:
         m_allocator(512)
     {}
 
-    GlobalPoolAllocator(GlobalPoolAllocator&);
-    ~GlobalPoolAllocator();
+    GlobalPoolAllocator(GlobalPoolAllocator&){};
+    ~GlobalPoolAllocator() {};
 
     FlexPoolAllocator m_allocator;
 };

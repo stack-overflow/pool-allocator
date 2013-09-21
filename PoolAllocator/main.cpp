@@ -11,19 +11,26 @@ struct TestVector4f
     float y;
     float z;
     float w;
+
+    void* operator new(std::size_t size)
+    {
+        return GlobalPoolAllocator::get_instance().allocate(size);
+    }
+
+    void operator delete(void* ptr, std::size_t size)
+    {
+        GlobalPoolAllocator::get_instance().deallocate(ptr, size);
+    }
 };
 
 int main()
 {
     int N_ELEMENTS = 32;
-    int N_ELEMENTS_PER_POOL = 512;
-
-    FlexPoolAllocator *allocator = new FlexPoolAllocator(N_ELEMENTS_PER_POOL);
     
     std::vector<TestVector4f*> v(N_ELEMENTS);
     for (int i = 0; i < N_ELEMENTS; ++i)
     {
-        TestVector4f *vec = (TestVector4f*) allocator->allocate(sizeof(TestVector4f));
+        TestVector4f *vec = new TestVector4f;
         vec->x = vec->y = vec->z = vec->w = float(i);
         v[i] = vec;
     }
@@ -35,10 +42,8 @@ int main()
 
     for(int i = 0; i < N_ELEMENTS; ++i)
     {
-        allocator->deallocate(v[i], sizeof(TestVector4f));
+        delete v[i];
     }
-
-    delete allocator;
 
     std::map<int, std::string, std::less<int>, StlPoolAllocator<std::string> > sample_pool_map;
 

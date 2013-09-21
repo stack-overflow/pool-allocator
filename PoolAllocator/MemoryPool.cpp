@@ -1,5 +1,5 @@
 #include "MemoryPool.h"
-#include <iostream>
+
 //#define PRECISE_MEMORY_CHECK
 
 MemoryPool::MemoryPool(size_t _num_blocks, size_t _block_size) :

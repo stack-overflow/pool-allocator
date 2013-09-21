@@ -33,7 +33,7 @@ void *AllocationEngine::allocate()
         return m_pools.front()->allocate();
     }
 }
-
+#include <iostream>
 void AllocationEngine::deallocate(void *p)
 {
     std::list<MemoryPool*>::iterator it = std::find_if(
