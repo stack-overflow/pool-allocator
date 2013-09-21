@@ -5,7 +5,7 @@
 
 #include "StlPoolAllocator.h"
 
-struct TestVector4f
+struct Vector4f
 {
     float x;
     float y;
@@ -27,10 +27,10 @@ int main()
 {
     int N_ELEMENTS = 32;
     
-    std::vector<TestVector4f*> v(N_ELEMENTS);
+    std::vector<Vector4f*> v(N_ELEMENTS);
     for (int i = 0; i < N_ELEMENTS; ++i)
     {
-        TestVector4f *vec = new TestVector4f;
+        Vector4f *vec = new Vector4f;
         vec->x = vec->y = vec->z = vec->w = float(i);
         v[i] = vec;
     }
@@ -45,7 +45,10 @@ int main()
         delete v[i];
     }
 
-    std::map<int, std::string, std::less<int>, StlPoolAllocator<std::string> > sample_pool_map;
+    std::map<int,
+             std::string,
+             std::less<int>,
+             StlPoolAllocator<std::string> > sample_pool_map;
 
     for (int i = 0; i < N_ELEMENTS; ++i)
     {
