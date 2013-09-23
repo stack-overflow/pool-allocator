@@ -61,5 +61,8 @@ int main()
         std::cout << sample_pool_map[i] << std::endl;
     }
 
+    std::cout << sizeof (PTR_INT) << std::endl;
+    std::cout << sizeof (PTR_INT*) << std::endl;
+
     return 0;
 }

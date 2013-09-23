@@ -2,7 +2,11 @@
 #include <memory>
 #include <cstdint>
 
-typedef unsigned long DWORD;
+#ifdef _WIN64
+typedef unsigned long long PTR_INT;
+#else
+typedef unsigned long PTR_INT;
+#endif
 typedef uint8_t       BYTE;
 
 class MemoryPool
@@ -27,21 +31,21 @@ public:
     void clear();
 
 private:
-    BYTE *get_next_block(DWORD *block) const;
+    BYTE *get_next_block(PTR_INT *block) const;
 
     BYTE *pointer_header(void *pointer) const;
 
-    void *data_pointer(DWORD *pointer) const;
+    void *data_pointer(PTR_INT *pointer) const;
 
-    DWORD *next_free_block_address(DWORD *block) const;
+    PTR_INT *next_free_block_address(PTR_INT *block) const;
 
     bool is_valid_pointer(void *pointer) const;
 
     void prepare_memory();
 
 private:
-    DWORD *m_head;
-    DWORD *m_mem;
+    PTR_INT *m_head;
+    PTR_INT *m_mem;
     int m_block_header_size;
     int m_num_blocks;
     int m_block_size;

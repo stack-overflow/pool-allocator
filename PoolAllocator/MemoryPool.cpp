@@ -4,12 +4,12 @@
 
 MemoryPool::MemoryPool(size_t _num_blocks, size_t _block_size) :
     m_num_blocks(_num_blocks),
-    m_block_header_size(sizeof(DWORD)),
-    m_block_size(_block_size + sizeof(DWORD)),
+    m_block_header_size(sizeof(PTR_INT)),
+    m_block_size(_block_size + sizeof(PTR_INT)),
     m_num_allocated_blocks(0)
 {
-    size_t num_bytes_to_alloc = m_num_blocks * m_block_size;
-    m_mem = m_head = (DWORD*) malloc(num_bytes_to_alloc);
+    size_t num_bytes_to_alloc = (size_t)(m_num_blocks * m_block_size);
+    m_mem = m_head = (PTR_INT*) malloc(num_bytes_to_alloc);
 
     prepare_memory();
 }
@@ -39,13 +39,13 @@ bool MemoryPool::deallocate(void *p)
 {
     if (is_from_here(p))
     {
-        DWORD *to_deallocate = (DWORD*) pointer_header(p);
+        PTR_INT *to_deallocate = (PTR_INT*) pointer_header(p);
 
         if (!is_valid_pointer(to_deallocate))
         {
             return false;
         }
-        (*to_deallocate) = (DWORD)m_head;
+        (*to_deallocate) = (PTR_INT)m_head;
         m_head = to_deallocate;
         --m_num_allocated_blocks;
 
@@ -75,7 +75,7 @@ bool MemoryPool::is_from_here(void *ptr) const
 #ifndef PRECISE_MEMORY_CHECK
     return ((ptr > (BYTE*)m_mem) && (ptr <= (BYTE*)m_mem + (m_num_blocks * m_block_size)));
 #else
-    DWORD *tmp = m_mem;
+    PTR_INT *tmp = m_mem;
     for (int i = 0; i < m_num_blocks; ++i)
     {
         if (ptr == data_pointer(tmp))
@@ -83,7 +83,7 @@ bool MemoryPool::is_from_here(void *ptr) const
             return true;
         }
 
-        tmp = (DWORD*)get_next_block(tmp);
+        tmp = (PTR_INT*)get_next_block(tmp);
     }
     return false;
 #endif // PRECISE_MEMORY_CHECK
@@ -96,7 +96,7 @@ void MemoryPool::clear()
 }
 
 // private ====
-BYTE *MemoryPool::get_next_block(DWORD *block) const
+BYTE *MemoryPool::get_next_block(PTR_INT *block) const
 {
     return (BYTE*) block + m_block_size;
 }
@@ -106,14 +106,14 @@ BYTE *MemoryPool::pointer_header(void *pointer) const
     return (BYTE*) pointer - m_block_header_size;
 }
 
-void *MemoryPool::data_pointer(DWORD *pointer) const
+void *MemoryPool::data_pointer(PTR_INT *pointer) const
 {
     return (void*) ((BYTE*) pointer + m_block_header_size);
 }
 
-DWORD *MemoryPool::next_free_block_address(DWORD *block) const
+PTR_INT *MemoryPool::next_free_block_address(PTR_INT *block) const
 {
-    return (DWORD*) (*block);
+    return (PTR_INT*) (*block);
 }
 
 bool MemoryPool::is_valid_pointer(void *pointer) const
@@ -127,11 +127,11 @@ bool MemoryPool::is_valid_pointer(void *pointer) const
 
 void MemoryPool::prepare_memory()
 {
-    DWORD *tmp_head = m_mem;
+    PTR_INT *tmp_head = m_mem;
     for (int i = 0; i < m_num_blocks; ++i)
     {
         // Get next block in linear memory and set the header to it
-        (*tmp_head) = (DWORD) get_next_block(tmp_head);
+        (*tmp_head) = (PTR_INT) get_next_block(tmp_head);
         // Enter the next block
         tmp_head = next_free_block_address(tmp_head);
     }
